@@ -3,7 +3,14 @@ import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, 
 @Controller('orders')
 export class OrdersController {
 
-  private orders: Order[] = [];
+  private orders: Order[] = [
+    {id: 1, createAt: '123', name: 'Заказ 1'},
+    {id: 2, createAt: '123', name: 'Заказ 2'},
+    {id: 3, createAt: '123', name: 'Заказ 3'},
+    {id: 4, createAt: '123', name: 'Заказ 4'},
+    {id: 5, createAt: '123', name: 'Заказ 5'},
+    {id: 6, createAt: '123', name: 'Заказ 6'}
+  ];
 
   @Get()
   getAll(): Order[] {
