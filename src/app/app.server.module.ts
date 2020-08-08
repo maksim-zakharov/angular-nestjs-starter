@@ -4,14 +4,20 @@ import { ServerModule, ServerTransferStateModule } from '@angular/platform-serve
 
 import { AppModule } from './app.module';
 import { AppComponent } from './app.component';
+import { NZ_I18N, NzI18nModule, ru_RU } from 'ng-zorro-antd';
 
 @NgModule({
   imports: [
     AppModule,
     ServerModule,
     ModuleMapLoaderModule,
-    ServerTransferStateModule
+    ServerTransferStateModule,
+    NzI18nModule
   ],
   bootstrap: [AppComponent],
+  providers: [
+    {provide: NZ_I18N, useValue: ru_RU}
+  ]
 })
-export class AppServerModule {}
+export class AppServerModule {
+}
