@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { AngularUniversalModule } from '@nestjs/ng-universal';
 import { join } from 'path';
-import { OrdersController } from './src/orders/orders.controller';
+import { OrdersModule } from './src/orders/orders.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -9,8 +10,18 @@ import { OrdersController } from './src/orders/orders.controller';
       viewsPath: join(process.cwd(), 'dist/browser'),
       bundle: require('../server/main'),
       liveReload: false
-    })
-  ],
-  controllers: [OrdersController]
+    }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'admin',
+      database: 'postgres',
+      entities: ['dist/**/*.entity{.ts,.js}'],
+      synchronize: true
+    }),
+    OrdersModule
+  ]
 })
 export class ApplicationModule {}

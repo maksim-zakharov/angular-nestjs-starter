@@ -1,25 +1,21 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
+import { OrdersService } from './orders.service';
+import { NewOrder, Order, UpdatedOrder } from './order.entity';
 
 @Controller('orders')
 export class OrdersController {
 
-  private orders: Order[] = [
-    {id: 1, createAt: '123', name: 'Заказ 1'},
-    {id: 2, createAt: '123', name: 'Заказ 2'},
-    {id: 3, createAt: '123', name: 'Заказ 3'},
-    {id: 4, createAt: '123', name: 'Заказ 4'},
-    {id: 5, createAt: '123', name: 'Заказ 5'},
-    {id: 6, createAt: '123', name: 'Заказ 6'}
-  ];
+  constructor(private ordersService: OrdersService) {
+  }
 
   @Get()
-  getAll(): Order[] {
-    return this.orders;
+  getAll(): Promise<Order[]> {
+    return this.ordersService.getAll();
   }
 
   @Get(':id')
-  getById(@Param('id') id: number): Order {
-    const order = this.orders.find(o => o.id === id);
+  async getById(@Param('id') id: number): Promise<Order> {
+    const order = await this.ordersService.getById(id);
     if (!order) {
       throw new HttpException({
         status: HttpStatus.BAD_REQUEST,
@@ -30,28 +26,27 @@ export class OrdersController {
   }
 
   @Post()
-  create(@Body() newOrder: NewOrder): void {
-    const order = {id: new Date().getTime(), createAt: new Date().toLocaleDateString(), ...newOrder};
-    this.orders.push(order);
+  create(@Body() newOrder: NewOrder): Promise<Order> {
+    return this.ordersService.create(newOrder);
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() updatedOrder: UpdatedOrder): Order {
-    let order = this.orders.find(i => i.id === id);
+  async update(@Param('id') id: number, @Body() updatedOrder: UpdatedOrder): Promise<Order> {
+    const order = await this.ordersService.getById(id);
     if (!order) {
       throw new HttpException({
         status: HttpStatus.BAD_REQUEST,
         error: 'Заказ не найден'
       }, HttpStatus.BAD_REQUEST);
     }
-    order = {...order, ...updatedOrder};
+    await this.ordersService.update(id, updatedOrder);
 
     return order;
   }
 
   @Delete(':id')
   delete(@Param('id') id: number): void {
-    const order = this.orders.find(i => i.id === id);
+    const order = this.ordersService.getById(id);
     if (!order) {
       throw new HttpException({
         status: HttpStatus.BAD_REQUEST,
@@ -59,18 +54,6 @@ export class OrdersController {
       }, HttpStatus.BAD_REQUEST);
     }
 
-    this.orders = this.orders.filter(i => i.id !== id);
+    this.ordersService.delete(id);
   }
-}
-
-interface NewOrder {
-  name: string;
-}
-
-interface UpdatedOrder extends NewOrder {
-  id: number;
-}
-
-interface Order extends UpdatedOrder {
-  createAt: string;
 }
