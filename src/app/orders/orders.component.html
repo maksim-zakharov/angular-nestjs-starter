@@ -1,4 +1,16 @@
-<ng-container *ngFor="let order of orders$ | async">
-  {{order | json}}
-</ng-container>
-123
+<nz-table #basicTable [nzData]="orders$ | async">
+  <thead>
+  <tr>
+    <th>Id</th>
+    <th>Название</th>
+    <th>Дата создания</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of basicTable.data">
+    <td>{{data.id}}</td>
+    <td>{{data.name}}</td>
+    <td>{{data.createDate}}</td>
+  </tr>
+  </tbody>
+</nz-table>
