@@ -10,6 +10,7 @@ export class OrdersController {
 
   @Get()
   getAll(): Promise<Order[]> {
+    console.log('Вызвал апиху');
     return this.ordersService.getAll();
   }
 

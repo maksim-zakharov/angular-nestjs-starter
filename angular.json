@@ -126,6 +126,7 @@
         "server": {
           "builder": "@angular-devkit/build-angular:server",
           "options": {
+            "bundleDependencies": "all",
             "outputPath": "dist/server",
             "main": "src/main.server.ts",
             "tsConfig": "tsconfig.server.json"
@@ -139,6 +140,30 @@
                 }
               ]
             }
+          }
+        },
+        "serve-ssr": {
+          "builder": "@nguniversal/builders:ssr-dev-server",
+          "options": {
+            "browserTarget": "universal-starter-v9:build",
+            "serverTarget": "universal-starter-v9:server"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "angular-nestjs-starter:build:production",
+              "serverTarget": "angular-nestjs-starter:server:production"
+            }
+          }
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "browserTarget": "angular-nestjs-starter:build:production",
+            "serverTarget": "angular-nestjs-starter:server:production",
+            "routes": ["/"]
+          },
+          "configurations": {
+            "production": {}
           }
         }
       }
